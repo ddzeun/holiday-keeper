@@ -1,1 +1,36 @@
-spring.application.name=holiday-keeper
+spring:
+  application:
+    name: holiday-keeper
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:holidaydb;MODE=MySQL;
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
