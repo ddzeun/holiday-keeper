@@ -6,6 +6,10 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -32,18 +36,27 @@ public class Holiday {
     private Boolean globalHoliday;
     private Integer launchYear;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "holiday_types",
+            joinColumns = @JoinColumn(name = "holiday_id")
+    )
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private HolidayType type;
+    @Column(name = "type_name")
+    private Set<HolidayType> types = new HashSet<>();
 
-    @Column(name = "raw_types")
-    private String rawTypes;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "holiday_counties",
+            joinColumns = @JoinColumn(name = "holiday_id")
+    )
+    @Column(name = "county_code")
+    private List<String> counties = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    protected Holiday() {
-    }
+    protected Holiday() {}
 
     public Holiday(LocalDate date,
                    String localName,
@@ -52,8 +65,8 @@ public class Holiday {
                    Boolean fixed,
                    Boolean globalHoliday,
                    Integer launchYear,
-                   HolidayType type,
-                   String rawTypes) {
+                   Set<HolidayType> types,
+                   List<String> counties) {
 
         this.date = date;
         this.localName = localName;
@@ -62,8 +75,8 @@ public class Holiday {
         this.fixed = fixed;
         this.globalHoliday = globalHoliday;
         this.launchYear = launchYear;
-        this.type = type;
-        this.rawTypes = rawTypes;
+        this.types = types;
+        this.counties = counties;
     }
 
     @PrePersist
