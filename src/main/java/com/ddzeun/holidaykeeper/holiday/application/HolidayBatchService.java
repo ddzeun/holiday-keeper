@@ -40,8 +40,9 @@ public class HolidayBatchService {
             newCountries.forEach(country -> {
                 try {
                     holidayService.loadYearForCountry(finalYear, country.getCountryCode());
+                    System.out.println("저장 성공: " + finalYear + "년, " + country.getCountryCode());
                 } catch (Exception e) {
-                    System.err.println("실패: " + finalYear + " " + country.getCountryCode());
+                    System.err.println("저장 실패: " + finalYear + "년, " + country.getCountryCode());
                 }
             });
         }
