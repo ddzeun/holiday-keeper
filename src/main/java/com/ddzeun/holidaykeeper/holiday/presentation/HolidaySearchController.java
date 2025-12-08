@@ -1,6 +1,8 @@
 package com.ddzeun.holidaykeeper.holiday.presentation;
 
 import com.ddzeun.holidaykeeper.holiday.application.HolidaySearchService;
+import com.ddzeun.holidaykeeper.holiday.application.dto.HolidaySearchRequest;
+import com.ddzeun.holidaykeeper.holiday.enums.HolidayType;
 import com.ddzeun.holidaykeeper.holiday.presentation.dto.HolidaySearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/holidays")
 @RequiredArgsConstructor
@@ -20,9 +24,14 @@ public class HolidaySearchController {
 
     @GetMapping
     public Page<HolidaySearchResponse> searchHoliday(
-            @RequestParam String countryCode,
+            @RequestParam(required = false) String countryCode,
+            @RequestParam(required = false) LocalDate from,
+            @RequestParam(required = false) LocalDate to,
+            @RequestParam(required = false) HolidayType type,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        return holidaySearchService.searchHolidays(countryCode, pageable);
+        HolidaySearchRequest request = new HolidaySearchRequest(countryCode, from, to, type);
+
+        return holidaySearchService.searchHolidays(request, pageable);
     }
 }
