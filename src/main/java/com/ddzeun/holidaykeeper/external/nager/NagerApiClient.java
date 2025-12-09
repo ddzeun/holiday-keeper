@@ -2,6 +2,7 @@ package com.ddzeun.holidaykeeper.external.nager;
 
 import com.ddzeun.holidaykeeper.external.nager.dto.AvailableCountryResponse;
 import com.ddzeun.holidaykeeper.external.nager.dto.HolidayResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -9,13 +10,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class NagerApiClient {
 
     private final WebClient nagerWebClient;
 
-    public NagerApiClient(WebClient nagerWebClient) {
-        this.nagerWebClient = nagerWebClient;
-    }
 
     /**
      * 국가 목록 조회(국가 코드, 국가명)
