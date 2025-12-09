@@ -97,6 +97,14 @@ public class HolidayService {
         holidayRepository.saveAll(upsertList);
     }
 
+    @Transactional
+    public void deleteHolidays(int year, String countryCode) {
+        LocalDate start = LocalDate.of(year, 1, 1);
+        LocalDate end = LocalDate.of(year, 12, 31);
+
+        holidayRepository.deleteByYearAndCountry(countryCode, start, end);
+    }
+
     private String buildKey(String countryCode, LocalDate date, String englishName) {
         return countryCode + "|" + date + "|" + englishName;
     }
