@@ -13,7 +13,12 @@ import java.util.Set;
 
 @Getter
 @Entity
-@Table(name = "holiday")
+@Table(name = "holiday", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_holiday_country_date_local",
+                columnNames = {"country_code", "date", "local_name"}
+        )
+})
 public class Holiday {
 
     @Id
@@ -74,6 +79,48 @@ public class Holiday {
         this.countryCode = countryCode;
         this.fixed = fixed;
         this.globalHoliday = globalHoliday;
+        this.launchYear = launchYear;
+        this.types = types;
+        this.counties = counties;
+    }
+
+    public static Holiday create(
+            LocalDate date,
+            String countryCode,
+            String localName,
+            String englishName,
+            boolean fixed,
+            boolean global,
+            Integer launchYear,
+            Set<HolidayType> types,
+            List<String> counties
+    ) {
+        Holiday holiday = new Holiday();
+        holiday.date = date;
+        holiday.countryCode = countryCode;
+        holiday.localName = localName;
+        holiday.englishName = englishName;
+        holiday.fixed = fixed;
+        holiday.globalHoliday = global;
+        holiday.launchYear = launchYear;
+        holiday.types = types;
+        holiday.counties = counties;
+        return holiday;
+    }
+
+    public void update(
+            String localName,
+            String englishName,
+            boolean fixed,
+            boolean global,
+            Integer launchYear,
+            Set<HolidayType> types,
+            List<String> counties
+    ) {
+        this.localName = localName;
+        this.englishName = englishName;
+        this.fixed = fixed;
+        this.globalHoliday = global;
         this.launchYear = launchYear;
         this.types = types;
         this.counties = counties;

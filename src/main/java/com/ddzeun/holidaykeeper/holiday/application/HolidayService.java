@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,32 +26,98 @@ public class HolidayService {
 
     @Transactional
     public void loadYearForCountry(int year, String countryCode) {
-
         List<HolidayResponse> responses = nagerApiClient.getPublicHolidays(year, countryCode);
 
         List<Holiday> holidays = responses.stream()
-                .map(response -> {
-                    Set<HolidayType> types = response.types() == null ? new HashSet<>() :
-                            response.types().stream()
-                                    .map(HolidayType::from)
-                                    .collect(Collectors.toSet());
-
-                    List<String> counties = response.counties() == null ? new ArrayList<>() : response.counties();
-
-                    return new Holiday(
-                            response.date(),
-                            response.localName(),
-                            response.name(),
-                            response.countryCode(),
-                            response.fixed(),
-                            response.global(),
-                            response.launchYear(),
-                            types,
-                            counties
-                    );
-                })
+                .map(this::mapToEntity)
                 .collect(Collectors.toList());
 
         holidayRepository.saveAll(holidays);
+    }
+
+    @Transactional
+    public void refreshHolidays(int year, String countryCode) {
+
+        LocalDate start = LocalDate.of(year, 1, 1);
+        LocalDate end = LocalDate.of(year, 12, 31);
+
+        List<HolidayResponse> apiResponses = nagerApiClient.getPublicHolidays(year, countryCode);
+        List<Holiday> dbHolidays = holidayRepository.findByYearAndCountry(countryCode, start, end);
+
+        Map<String, Holiday> dbMap = dbHolidays.stream()
+                .collect(Collectors.toMap(
+                        h -> buildKey(h.getCountryCode(), h.getDate(), h.getEnglishName()),
+                        h -> h
+                ));
+
+
+        List<Holiday> upsertList = new ArrayList<>();
+
+        for (HolidayResponse res : apiResponses) {
+            String key = buildKey(countryCode, res.date(), res.name());
+            Holiday existing = dbMap.get(key);
+
+            Set<HolidayType> types = mapToHolidayTypes(res.types());
+            List<String> counties = mapToCounties(res.counties());
+
+            if (existing != null) {
+
+                existing.update(
+                        res.localName(),
+                        res.name(),
+                        res.fixed(),
+                        res.global(),
+                        res.launchYear(),
+                        types,
+                        counties
+                );
+            } else {
+                Holiday newHoliday = Holiday.create(
+                        res.date(),
+                        countryCode,
+                        res.localName(),
+                        res.name(),
+                        res.fixed(),
+                        res.global(),
+                        res.launchYear(),
+                        types,
+                        counties
+                );
+                upsertList.add(newHoliday);
+            }
+        }
+
+        holidayRepository.saveAll(upsertList);
+    }
+
+    private String buildKey(String countryCode, LocalDate date, String englishName) {
+        return countryCode + "|" + date + "|" + englishName;
+    }
+
+    private Holiday mapToEntity(HolidayResponse response) {
+        return new Holiday(
+                response.date(),
+                response.localName(),
+                response.name(),
+                response.countryCode(),
+                response.fixed(),
+                response.global(),
+                response.launchYear(),
+                mapToHolidayTypes(response.types()),
+                mapToCounties(response.counties())
+        );
+    }
+
+    private Set<HolidayType> mapToHolidayTypes(List<String> types) {
+        if (types == null) {
+            return new HashSet<>();
+        }
+        return types.stream()
+                .map(HolidayType::from)
+                .collect(Collectors.toSet());
+    }
+
+    private List<String> mapToCounties(List<String> counties) {
+        return counties == null ? new ArrayList<>() : counties;
     }
 }
