@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,5 +46,13 @@ public class HolidaySearchController {
             @RequestParam String countryCode
     ) {
         holidayService.refreshHolidays(year, countryCode);
+    }
+
+    @DeleteMapping
+    public void deleteHolidays(
+            @RequestParam int year,
+            @RequestParam String countryCode
+    ) {
+        holidayService.deleteHolidays(year, countryCode);
     }
 }
