@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class HolidayService {
                         types,
                         counties
                 );
+                dbMap.remove(key);
             } else {
                 Holiday newHoliday = Holiday.create(
                         res.date(),
@@ -85,6 +87,11 @@ public class HolidayService {
                 );
                 upsertList.add(newHoliday);
             }
+        }
+
+        Collection<Holiday> toDelete = dbMap.values();
+        if (!toDelete.isEmpty()) {
+            holidayRepository.deleteAll(toDelete);
         }
 
         holidayRepository.saveAll(upsertList);
