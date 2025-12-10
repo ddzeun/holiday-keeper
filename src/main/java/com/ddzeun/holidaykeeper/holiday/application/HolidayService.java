@@ -29,10 +29,18 @@ public class HolidayService {
         List<HolidayResponse> responses = nagerApiClient.getPublicHolidays(year, countryCode);
 
         List<Holiday> holidays = responses.stream()
-                .map(this::mapToEntity)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        res -> res.date().toString() + res.localName(),
+                        this::mapToEntity,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .toList();
 
-        holidayRepository.saveAll(holidays);
+        if (!holidays.isEmpty()) {
+            holidayRepository.saveAll(holidays);
+        }
     }
 
     @Transactional
