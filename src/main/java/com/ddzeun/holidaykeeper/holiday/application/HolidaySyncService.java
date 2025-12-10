@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HolidayBatchService {
+public class HolidaySyncService {
 
     private final NagerApiClient nagerApiClient;
     private final CountryRepository countryRepository;

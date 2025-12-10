@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class HolidayBatchServiceTest {
+class HolidaySyncServiceTest {
 
     @TestConfiguration
     static class MockConfig {
@@ -40,7 +40,7 @@ class HolidayBatchServiceTest {
     }
 
     @Autowired
-    HolidayBatchService holidayBatchService;
+    HolidaySyncService holidaySyncService;
 
     @Autowired
     CountryRepository countryRepository;
@@ -69,7 +69,7 @@ class HolidayBatchServiceTest {
 
         countryRepository.save(new Country("KR", "South Korea"));
 
-        holidayBatchService.loadRecentYearsForAllCountries();
+        holidaySyncService.loadRecentYearsForAllCountries();
 
         var codes = countryRepository.findAllCountryCodes();
         assertThat(codes).contains("KR", "US");
@@ -96,7 +96,7 @@ class HolidayBatchServiceTest {
                 ));
 
         // when
-        holidayBatchService.loadRecentYearsForAllCountries();
+        holidaySyncService.loadRecentYearsForAllCountries();
 
         // then
         verify(holidayService, never()).loadYearForCountry(anyInt(), anyString());

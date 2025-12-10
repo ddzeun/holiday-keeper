@@ -28,8 +28,8 @@ class HolidaySearchServiceTest {
     static class MockConfig {
         @Bean
         @Primary
-        public HolidayBatchService holidayBatchService() {
-            return mock(HolidayBatchService.class);
+        public HolidaySyncService holidayBatchService() {
+            return mock(HolidaySyncService.class);
         }
     }
 

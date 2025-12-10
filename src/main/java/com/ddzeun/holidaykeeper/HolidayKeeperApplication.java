@@ -1,6 +1,6 @@
 package com.ddzeun.holidaykeeper;
 
-import com.ddzeun.holidaykeeper.holiday.application.HolidayBatchService;
+import com.ddzeun.holidaykeeper.holiday.application.HolidaySyncService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,10 +18,10 @@ public class HolidayKeeperApplication {
     }
 
     @Bean
-    public CommandLineRunner initData(HolidayBatchService holidayBatchService) {
+    public CommandLineRunner initData(HolidaySyncService holidaySyncService) {
         return args -> {
             System.out.println("======== [초기화] 공휴일 데이터 적재 시작 ========");
-            holidayBatchService.loadRecentYearsForAllCountries();
+            holidaySyncService.loadRecentYearsForAllCountries();
             System.out.println("======== [초기화] 공휴일 데이터 적재 완료 ========");
         };
     }
