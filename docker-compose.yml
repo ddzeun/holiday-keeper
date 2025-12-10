@@ -1,0 +1,13 @@
+services:
+  app:
+    container_name: holidaykeeper-app
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    networks:
+      - holiday-net
+
+networks:
+  holiday-net:

@@ -89,6 +89,17 @@ cd holiday-keeper
 ./gradlew clean build
 java -jar build/libs/holiday-keeper-0.0.1-SNAPSHOT.jar
 ```
+### 선택사항: 도커 실행
+
+```bash
+# 실행권한 부여
+chmod +x local.sh
+
+# 실행
+./local.sh
+```
+> 스크립트 실행 시 테스트는 제하고 빌드되므로 테스트는 별도 실행해야 합니다.
+
 
 **실행 후 접속 URL:**
 - API 서버: http://localhost:8080
@@ -422,9 +433,10 @@ holiday-keeper/
 ✅ 병렬 처리 최적화  
 ✅ CORS 설정  
 ✅ 전역 예외 처리
+✅ GitHub Actions CI/CD
+✅ Docker 컨테이너화
 
 ### 추가 개선 가능 사항
 - Redis 캐싱 추가
 - API Rate Limiting
-- Docker 컨테이너화
-- GitHub Actions CI/CD
+
