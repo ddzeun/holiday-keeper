@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HolidayBatchScheduler {
+public class HolidaySyncScheduler {
 
     private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
@@ -31,7 +31,7 @@ public class HolidayBatchScheduler {
         int currentYear = Year.now(KST).getValue();
         int previousYear = currentYear - 1;
 
-        log.info("[HolidayBatchScheduler] 연간 공휴일 동기화 배치 시작 - 이전 연도: {}, 현재 연도: {}",
+        log.info("[HolidaySyncScheduler] 연간 공휴일 동기화 배치 시작 - 이전 연도: {}, 현재 연도: {}",
                 previousYear, currentYear);
 
         List<AvailableCountryResponse> countries = nagerApiClient.getAvailableCountries();
@@ -57,7 +57,7 @@ public class HolidayBatchScheduler {
         }
 
         log.info(
-                "[HolidayBatchScheduler] 연간 공휴일 동기화 배치 종료 - 이전 연도: {}, 현재 연도: {}, 전체 작업 수: {}, 성공: {}, 실패: {}",
+                "[HolidaySyncScheduler] 연간 공휴일 동기화 배치 종료 - 이전 연도: {}, 현재 연도: {}, 전체 작업 수: {}, 성공: {}, 실패: {}",
                 previousYear, currentYear, totalTasks, successCount, failCount
         );
     }
@@ -65,10 +65,10 @@ public class HolidayBatchScheduler {
     private boolean syncYear(int year, String countryCode) {
         try {
             holidayService.refreshHolidays(year, countryCode);
-            log.info("🟢 [HolidayBatchScheduler] 동기화 성공 - 연도: {}, 국가 코드: {}", year, countryCode);
+            log.info("🟢 [HolidaySyncScheduler] 동기화 성공 - 연도: {}, 국가 코드: {}", year, countryCode);
             return true;
         } catch (Exception e) {
-            log.error("🔴 [HolidayBatchScheduler] 동기화 실패 - 연도: {}, 국가 코드: {}", year, countryCode, e);
+            log.error("🔴 [HolidaySyncScheduler] 동기화 실패 - 연도: {}, 국가 코드: {}", year, countryCode, e);
             return false;
         }
     }
