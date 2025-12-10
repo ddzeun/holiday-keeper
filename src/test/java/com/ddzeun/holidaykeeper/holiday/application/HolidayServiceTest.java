@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 class HolidayServiceTest {
 
     @TestConfiguration
