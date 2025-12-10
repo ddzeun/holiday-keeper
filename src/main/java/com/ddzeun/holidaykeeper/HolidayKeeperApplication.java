@@ -1,6 +1,7 @@
 package com.ddzeun.holidaykeeper;
 
 import com.ddzeun.holidaykeeper.holiday.application.HolidaySyncService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableScheduling
@@ -26,6 +29,11 @@ public class HolidayKeeperApplication {
             holidaySyncService.loadRecentYearsForAllCountries();
             System.out.println("======== [초기화] 공휴일 데이터 적재 완료 ========");
         };
+    }
+
+    @PostConstruct
+    public void started() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
     }
 
 }
