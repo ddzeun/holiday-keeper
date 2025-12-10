@@ -433,11 +433,16 @@ holiday-keeper/
 ✅ 단위/통합 테스트  
 ✅ 병렬 처리 최적화  
 ✅ CORS 설정  
-✅ 전역 예외 처리
-✅ GitHub Actions CI/CD
-✅ Docker 컨테이너화
+✅ 전역 예외 처리  
+✅ GitHub Actions CI/CD  
+✅ Docker 컨테이너화  
 
 ### 추가 개선 가능 사항
 - Redis 캐싱 추가
 - API Rate Limiting
+
+### 고민 사항
+- Docker를 사용하여 실행 시 데이터 적재 속도가 현저하게 느려짐. 원인과 해결방안이 있을까
+
+
 
