@@ -15,12 +15,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class HolidayBatchService {
 
-    private static final int END_YEAR = LocalDate.now().getYear();
-    private static final int START_YEAR = END_YEAR - 5;
-
     private final NagerApiClient nagerApiClient;
     private final CountryRepository countryRepository;
     private final HolidayService holidayService;
+    private final HolidayYearPolicy holidayYearPolicy;
 
     public void loadRecentYearsForAllCountries() {
 
@@ -35,7 +33,11 @@ public class HolidayBatchService {
         if (!newCountries.isEmpty()) {
             countryRepository.saveAll(newCountries);
         }
-        for (int year = START_YEAR; year <= END_YEAR; year++) {
+
+        int startYear = holidayYearPolicy.getStartYear();
+        int endYear = holidayYearPolicy.getEndYear();
+
+        for (int year = startYear; year <= endYear; year++) {
             int finalYear = year;
             newCountries.forEach(country -> {
                 try {
