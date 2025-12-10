@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,15 +42,34 @@ public class HolidaySyncService {
         int startYear = holidayYearPolicy.getStartYear();
         int endYear = holidayYearPolicy.getEndYear();
 
+        int threadCount = Runtime.getRuntime().availableProcessors() * 2;
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        long startTime = System.currentTimeMillis();
+        log.info("======== 병렬 데이터 적재 시작 (Thread Pool Size: {}) ========", threadCount);
+
         for (int year = startYear; year <= endYear; year++) {
             int finalYear = year;
-            newCountries.forEach(country -> {
-                try {
-                    holidayService.loadYearForCountry(finalYear, country.getCountryCode());
-                    log.info("저장 성공: {}년, {}", finalYear, country.getCountryCode());
-                } catch (Exception e) {
-                    log.error("저장 실패: {}년, {}, 원인: {}", finalYear, country.getCountryCode(), e.getMessage(), e);}
-            });
+            for (Country country : newCountries) {
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    try {
+                        holidayService.loadYearForCountry(finalYear, country.getCountryCode());
+                        log.info("저장 성공: {}년, {} - Thread: {}", finalYear, country.getCountryCode(), Thread.currentThread().getName());
+                    } catch (Exception e) {
+                        log.error("저장 실패: {}년, {}, 원인: {}", finalYear, country.getCountryCode(), e.getMessage());
+                    }
+                }, executor);
+
+                futures.add(future);
+            }
         }
+
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        executor.shutdown();
+
+        long duration = System.currentTimeMillis() - startTime;
+        log.info("======== 병렬 데이터 적재 완료 (소요시간: {}ms) ========", duration);
     }
 }

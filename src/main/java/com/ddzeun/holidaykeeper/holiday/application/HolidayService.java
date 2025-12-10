@@ -25,7 +25,6 @@ public class HolidayService {
     private final NagerApiClient nagerApiClient;
     private final HolidayRepository holidayRepository;
 
-    @Transactional
     public void loadYearForCountry(int year, String countryCode) {
         List<HolidayResponse> responses = nagerApiClient.getPublicHolidays(year, countryCode);
 
