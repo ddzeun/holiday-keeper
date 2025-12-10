@@ -5,14 +5,15 @@ import com.ddzeun.holidaykeeper.country.repository.CountryRepository;
 import com.ddzeun.holidaykeeper.external.nager.NagerApiClient;
 import com.ddzeun.holidaykeeper.external.nager.dto.AvailableCountryResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HolidayBatchService {
 
     private final NagerApiClient nagerApiClient;
@@ -42,10 +43,9 @@ public class HolidayBatchService {
             newCountries.forEach(country -> {
                 try {
                     holidayService.loadYearForCountry(finalYear, country.getCountryCode());
-                    System.out.println("저장 성공: " + finalYear + "년, " + country.getCountryCode());
+                    log.info("저장 성공: {}년, {}", finalYear, country.getCountryCode());
                 } catch (Exception e) {
-                    System.err.println("저장 실패: " + finalYear + "년, " + country.getCountryCode());
-                }
+                    log.error("저장 실패: {}년, {}, 원인: {}", finalYear, country.getCountryCode(), e.getMessage(), e);}
             });
         }
     }
