@@ -233,6 +233,11 @@ DELETE /api/holidays?year=2024&countryCode=US
 
 ## 🗄️ 데이터베이스 설계
 
+<details>
+<summary>ERD 이미지 보기</summary>
+<img width="1105" height="395" alt="image" src="https://github.com/user-attachments/assets/8e6780d6-1625-4179-aeba-004c65a17a07" />
+</details>
+
 ### ERD 개요
 - `Country`: 국가 정보
 - `Holiday`: 공휴일 정보
@@ -240,12 +245,6 @@ DELETE /api/holidays?year=2024&countryCode=US
 - `holiday_counties`: 지역별 공휴일 정보
 
 ### 주요 테이블
-
-<details>
-<summary>ERD 이미지 보기</summary>
-
-
-</details>
 
 - Country와 Holiday는 느슨한 참조 관계로 직접적인 FK 제약 조건을 가지지 않습니다.
 
@@ -293,6 +292,10 @@ DELETE /api/holidays?year=2024&countryCode=US
 ./gradlew clean test
 ```
 
+#### `./gradlew clean test` 실행 결과
+<img width="3052" height="1740" alt="image" src="https://github.com/user-attachments/assets/5ad95997-193b-4fce-bbfb-fffb3d94426b" />
+
+
 ### 테스트 커버리지
 
 #### 1. 단위 테스트
@@ -305,14 +308,6 @@ DELETE /api/holidays?year=2024&countryCode=US
 
 #### 3. API 통합 테스트
 - `NagerApiClientIntegrationTest`: 실제 외부 API 호출 테스트 (수동 실행용)
-
-### 테스트 결과 예시
-
-<details>
-<summary>테스트 성공 스크린샷 보기</summary>
-
-
-</details>
 
 ---
 
@@ -400,6 +395,23 @@ holiday-keeper/
 - `@ActiveProfiles("test")`로 테스트 환경 분리
 
 ---
+
+# 기타
+
+## 프론트엔드 실행 이미지
+<details>
+  <summary>
+    조회, 삭제, 동기화
+  </summary>
+  <img width="1114" height="763" alt="image" src="https://github.com/user-attachments/assets/ca35573f-b1a8-448c-9522-99a81535ebe6" />
+</details>
+
+<details>
+  <summary>
+    조회 후 하단 리스트 결과
+  </summary>
+  <img width="540" height="763" alt="image" src="https://github.com/user-attachments/assets/ed8b3c6f-eb4a-4b26-8d14-11a190f2036f" />
+</details>
 
 ## 📝 개발 노트
 
